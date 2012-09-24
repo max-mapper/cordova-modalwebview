@@ -43,13 +43,65 @@
 	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"openURL"]]];	
 }
 
-- (void) dialogDidSucceed:(NSURL*)url {
-
-}
 
 - (void) dealloc {
 	[_callbackIds dealloc];
 	[super dealloc];
+}
+
+/**
+ * Called when the dialog succeeds and is about to be dismissed.
+ */
+- (void)dialogDidComplete:(ModalWebView *)dialog
+{
+
+}
+
+/**
+ * Called when the dialog succeeds with a returning url.
+ */
+- (void)dialogCompleteWithUrl:(NSURL *)url
+{
+
+}
+
+/**
+ * Called when the dialog get canceled by the user.
+ */
+- (void)dialogDidNotCompleteWithUrl:(NSURL *)url
+{
+
+}
+
+/**
+ * Called when the dialog is cancelled and is about to be dismissed.
+ */
+- (void)dialogDidNotComplete:(ModalWebView *)dialog
+{
+
+}
+
+/**
+ * Called when dialog failed to load due to an error.
+ */
+- (void)dialog:(ModalWebView*)dialog didFailWithError:(NSError *)error
+{
+
+}
+
+/**
+ * Asks if a link touched by a user should be opened in an external browser.
+ *
+ * If a user touches a link, the default behavior is to open the link in the Safari browser,
+ * which will cause your app to quit.  You may want to prevent this from happening, open the link
+ * in your own internal browser, or perhaps warn the user that they are about to leave your app.
+ * If so, implement this method on your delegate and return NO.  If you warn the user, you
+ * should hold onto the URL and once you have received their acknowledgement open the URL yourself
+ * using [[UIApplication sharedApplication] openURL:].
+ */
+- (BOOL)dialog:(ModalWebView*)dialog shouldOpenURLInExternalBrowser:(NSURL *)url
+{
+  return NO;
 }
 
 
