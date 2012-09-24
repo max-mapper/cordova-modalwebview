@@ -25,5 +25,6 @@
 
 @property (nonatomic, retain) NSMutableDictionary* callbackIds;
 -	(void) showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) callCloseCallback;
 
 @end

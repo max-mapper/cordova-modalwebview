@@ -40,6 +40,10 @@
   [_modalWebView show];
 }
 
+- (void)close:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
+  [_modalWebView dismissWithSuccess:YES animated:YES];
+}
+
 - (void) dealloc {
 	[_callbackIds dealloc];
 	[super dealloc];
@@ -50,7 +54,15 @@
  */
 - (void)dialogDidComplete:(ModalWebView *)dialog
 {
+  [self callCloseCallback];
+}
 
+- (void)callCloseCallback {
+  NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithObject:@"CLOSE_EVENT" forKey:@"type"]];
+  CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                    messageAsDictionary:dict];
+  [result setKeepCallbackAsBool:YES];
+  [self writeJavascript: [result toSuccessCallbackString:[self.callbackIds valueForKey:@"onEvent"]]];
 }
 
 /**
@@ -85,11 +97,7 @@
  */
 - (void)dialogDidNotCompleteWithUrl:(NSURL *)url
 {
-  NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithObject:@"CLOSE_EVENT" forKey:@"type"]];
-  CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                    messageAsDictionary:dict];
-  [result setKeepCallbackAsBool:YES];
-  [self writeJavascript: [result toSuccessCallbackString:[self.callbackIds valueForKey:@"onEvent"]]];
+  [self callCloseCallback];
 }
 
 /**
