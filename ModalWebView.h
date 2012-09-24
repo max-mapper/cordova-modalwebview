@@ -129,6 +129,11 @@
 - (void)dialogDidComplete:(ModalWebView *)dialog;
 
 /**
+ * Called when the dialog webView finishes loading a page
+ */
+- (void)dialogDidFinishLoad:(NSString*)newLoc;
+
+/**
  * Called when the dialog succeeds with a returning url.
  */
 - (void)dialogCompleteWithUrl:(NSURL *)url;

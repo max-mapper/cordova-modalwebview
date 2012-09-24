@@ -29,8 +29,8 @@
 	return _callbackIds;
 }
 
-- (void)openURL:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
-	[self.callbackIds setValue:[arguments pop] forKey:@"openURL"];
+- (void)showWebPage:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
+	[self.callbackIds setValue:[arguments pop] forKey:@"onEvent"];
   NSString *url = [options objectForKey:@"url"] ?: @"";
   BOOL invisible = NO;
   _modalWebView = [[ModalWebView alloc] initWithURL:url
@@ -38,11 +38,7 @@
                                   isViewInvisible:invisible
                                          delegate:self];
   [_modalWebView show];
-
-  CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"openURL"]]];	
 }
-
 
 - (void) dealloc {
 	[_callbackIds dealloc];
@@ -58,6 +54,25 @@
 }
 
 /**
+ * Called when the dialog succeeds and is about to be dismissed.
+ */
+- (void)dialogDidFinishLoad:(NSString *)newLoc
+{
+  NSString* tempLoc = [NSString stringWithFormat:@"%@",newLoc];
+	NSString* encUrl = [tempLoc stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	
+  NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithObject:@"LOCATION_CHANGED_EVENT" forKey:@"type"]];
+
+  [dict setObject:encUrl forKey:@"location"];
+
+  CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                    messageAsDictionary:dict];
+  [result setKeepCallbackAsBool:YES];
+
+  [self writeJavascript: [result toSuccessCallbackString:[self.callbackIds valueForKey:@"onEvent"]]];
+}
+
+/**
  * Called when the dialog succeeds with a returning url.
  */
 - (void)dialogCompleteWithUrl:(NSURL *)url
@@ -70,7 +85,11 @@
  */
 - (void)dialogDidNotCompleteWithUrl:(NSURL *)url
 {
-
+  NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithObject:@"CLOSE_EVENT" forKey:@"type"]];
+  CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                    messageAsDictionary:dict];
+  [result setKeepCallbackAsBool:YES];
+  [self writeJavascript: [result toSuccessCallbackString:[self.callbackIds valueForKey:@"onEvent"]]];
 }
 
 /**

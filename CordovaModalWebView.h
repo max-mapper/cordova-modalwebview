@@ -24,6 +24,6 @@
 }
 
 @property (nonatomic, retain) NSMutableDictionary* callbackIds;
--	(void) openURL:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+-	(void) showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

@@ -450,6 +450,10 @@ params   = _params;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    if ([_delegate respondsToSelector:@selector(dialogDidFinishLoad:)]) {
+        NSURLRequest *request = webView.request;
+        [_delegate dialogDidFinishLoad:request.URL.absoluteString];
+    }
     if (_isViewInvisible) {
         // if our cache asks us to hide the view, then we do, but
         // in case of a stale cache, we will display the view in a moment
